@@ -1,0 +1,5 @@
+{
+  "name": "searchserver",
+  "alias": "searchserver.now.sh",
+  "dotenv": ".env.production"
+}
