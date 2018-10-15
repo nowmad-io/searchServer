@@ -10,11 +10,9 @@ class AlgoliaFirebase {
       .initIndex(indexName);
 
     const ref = this.firebase.database().ref(`/${indexName}`);
-    if (process.env.NODE_ENV !== 'development') {
-      ref.on('child_added', this.addOrUpdateIndexRecord.bind(this));
-      ref.on('child_changed', this.addOrUpdateIndexRecord.bind(this));
-      ref.on('child_removed', this.deleteIndexRecord.bind(this));
-    }
+    ref.on('child_added', this.addOrUpdateIndexRecord.bind(this));
+    ref.on('child_changed', this.addOrUpdateIndexRecord.bind(this));
+    ref.on('child_removed', this.deleteIndexRecord.bind(this));
   }
 
   addOrUpdateIndexRecord(user) {
