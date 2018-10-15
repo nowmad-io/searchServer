@@ -23,18 +23,16 @@ function authorize(req, res, next) {
   res.status(403).send();
 }
 
-app.get('/', (req, res) => res.redirect('https://nowmad.io'));
-
-app.get('/api/search', (req, res) => {
+app.get('/api/search', authorize, (req, res) => {
   const user = req.query.user || '';
   if (user) {
-    algoliaFirebase.algolia.search(user, (err, content) => {
-      res.json(content);
-    });
+    algoliaFirebase.algolia.search(user, (err, content) => res.json(content));
     return;
   }
   res.json({ hits: [] })
 });
+
+app.get('*', (req, res) => res.redirect('https://nowmad.io'));
 
 const port = process.env.PORT || 4000;
 
