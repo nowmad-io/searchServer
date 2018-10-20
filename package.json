@@ -4,8 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon .",
-    "deploy": "now --public && now alias && now remove imageserver --safe --yes"
+    "start": "node index.js",
+    "dev": "nodemon .",
+    "deploy": "now --public && now alias && now remove searchserver --safe --yes"
   },
   "author": "",
   "license": "ISC",
