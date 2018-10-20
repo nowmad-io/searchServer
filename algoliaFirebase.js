@@ -21,15 +21,7 @@ class AlgoliaFirebase {
     // Specify Algolia's objectID using the Firebase object key
     record.objectID = user.key;
     // Add or update object
-    this.algolia
-      .saveObject(record)
-      .then(() => {
-        console.log('Firebase object indexed in Algolia', record.objectID);
-      })
-      .catch(error => {
-        console.error('Error when indexing user into Algolia', error);
-        process.exit(1);
-      });
+    this.algolia.saveObject(record);
   }
 
   deleteIndexRecord(user) {
