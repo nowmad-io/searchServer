@@ -30,11 +30,7 @@ function authorize(req, res, next) {
 app.get('/api/search', authorize, (req, res) => {
   const user = req.query.user || '';
   if (user) {
-    algoliaFirebase.algolia.search(user, (err, content) => {
-      console.log('err', err);
-      console.log('content', content);
-      return res.json(content);
-    });
+    algoliaFirebase.algolia.search(user, (err, content) => res.json(content));
     return;
   }
   res.json({ hits: [] })
