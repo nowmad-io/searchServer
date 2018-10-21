@@ -1,15 +1,18 @@
 "use strict";
 const algoliasearch = require('algoliasearch');
-const firebase = require('firebase');
+const firebase = require('firebase-admin');
 
 class AlgoliaFirebase {
-  constructor(configFirebase, configAlgolia, indexName) {
-    this.firebase = firebase.initializeApp(configFirebase);
+  constructor(configFirebase, indexNameFirebase, configAlgolia, indexNameAlgolia) {
+    this.firebase = firebase.initializeApp({
+      ...configFirebase,
+      credential: firebase.credential.cert(configFirebase.credential),
+    });
 
     this.algolia = algoliasearch(configAlgolia.appId, configAlgolia.apiKey)
-      .initIndex(indexName);
+      .initIndex(indexNameAlgolia);
 
-    const ref = this.firebase.database().ref(`/${indexName}`);
+    const ref = this.firebase.database().ref(`/${indexNameFirebase}`);
     ref.on('child_added', this.addOrUpdateIndexRecord.bind(this));
     ref.on('child_changed', this.addOrUpdateIndexRecord.bind(this));
     ref.on('child_removed', this.deleteIndexRecord.bind(this));
@@ -21,7 +24,15 @@ class AlgoliaFirebase {
     // Specify Algolia's objectID using the Firebase object key
     record.objectID = user.key;
     // Add or update object
-    this.algolia.saveObject(record);
+    this.algolia
+      .saveObject(record)
+      .then(() => {
+        console.log('Firebase object indexed in Algolia', record.objectID);
+      })
+      .catch(error => {
+        console.error('Error when indexing user into Algolia', error);
+        process.exit(1);
+      });
   }
 
   deleteIndexRecord(user) {

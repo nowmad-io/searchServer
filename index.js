@@ -3,7 +3,11 @@ const express = require('express');
 const AlgoliaFirebase = require('./algoliaFirebase');
 
 const algoliaFirebase = new AlgoliaFirebase(
-  { databaseURL: process.env.FIREBASE_DATABASE_URL },
+  {
+    credential: JSON.parse(Buffer.from(process.env.FIREBASE_ADMIN_KEY, 'base64').toString()),
+    databaseURL: process.env.FIREBASE_DATABASE_URL,
+  },
+  process.env.FIREBASE_INDEX_NAME,
   {
     appId: process.env.ALGOLIA_APP_ID,
     apiKey: process.env.ALGOLIA_API_KEY,
@@ -26,7 +30,11 @@ function authorize(req, res, next) {
 app.get('/api/search', authorize, (req, res) => {
   const user = req.query.user || '';
   if (user) {
-    algoliaFirebase.algolia.search(user, (err, content) => res.json(content));
+    algoliaFirebase.algolia.search(user, (err, content) => {
+      console.log('err', err);
+      console.log('content', content);
+      return res.json(content);
+    });
     return;
   }
   res.json({ hits: [] })
