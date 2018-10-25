@@ -10,7 +10,12 @@ class AlgoliaFirebase {
     });
 
     this.algolia = algoliasearch(configAlgolia.appId, configAlgolia.apiKey)
-      .initIndex(indexNameAlgolia);
+      .initIndex(indexNameAlgolia)
+    this.algolia.setSettings({
+        searchableAttributes: [
+          'email,firstName,lastName',
+        ],
+      });
 
     const ref = this.firebase.database().ref(`/${indexNameFirebase}`);
     ref.on('child_added', this.addOrUpdateIndexRecord.bind(this));

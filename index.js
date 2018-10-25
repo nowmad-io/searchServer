@@ -27,11 +27,11 @@ function authorize(req, res, next) {
   res.status(403).send();
 }
 
-app.get('/api/search', authorize, (req, res) => {
+app.get('/api/search', (req, res) => {
   const user = req.query.user || '';
   if (user) {
-    algoliaFirebase.algolia.search(user, (err, content) => res.json(content));
-    return;
+    return algoliaFirebase.algolia.search(user)
+      .then((content) => res.json(content));
   }
   res.json({ hits: [] })
 });
