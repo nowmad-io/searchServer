@@ -36,8 +36,14 @@ app.get('/api/search', (req, res) => {
   res.json({ hits: [] })
 });
 
+app.get('/api/notifyme', (req, res) => {
+  const email = req.query.email || '';
+  algoliaFirebase.firebase.database().ref('/interestedUsers').child(email).set(true);
+  res.status(200).send();
+});
+
 app.get('*', (req, res) => res.redirect('https://nowmad.io'));
 
-const port = process.env.PORT || 4000;
+const port = process.env.PORT || 8000;
 
 app.listen(port, () => console.log('app listening on port: ', port));
